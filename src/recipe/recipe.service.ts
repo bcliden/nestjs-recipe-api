@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { RecipeEntity } from './recipe.entity';
 import { RecipeDTO } from './recipe.dto';
+import { ValidUUID } from '../shared/helpers';
 
 @Injectable()
 export class RecipeService {
@@ -23,16 +24,47 @@ export class RecipeService {
     }
 
     async read(id: string){
-        return await this.RecipeRepository.findOne({where: {id}});
+        // check correct uuid before db call
+        if ( !ValidUUID(id) ) {
+            throw new BadRequestException;
+        }
+
+        const recipe =  await this.RecipeRepository.findOne({where: {id}});
+        if (!recipe) {
+            throw new NotFoundException;
+        }
+
+        return recipe;
     }
 
     async update(id: string, data: Partial<RecipeDTO>){
+        // check correct uuid before db call
+        if ( !ValidUUID(id) ) {
+            throw new BadRequestException;
+        }
+
+        const recipe = await this.RecipeRepository.findOne({ where: { id }});
+        if (!recipe) {
+            throw new NotFoundException;
+        }
+
         await this.RecipeRepository.update({id}, data);
         return await this.RecipeRepository.findOne({ id });
     }
 
     async destroy(id: string){
-        await this.RecipeRepository.delete({ id });
-        return { deleted: true };
+        // check correct uuid before db call
+        if ( !ValidUUID(id) ) {
+            throw new BadRequestException;
+        }
+
+        const recipe = await this.RecipeRepository.findOne({ where: { id }});
+        if (!recipe) {
+            throw new NotFoundException;
+        }
+
+        await this.RecipeRepository.delete({id});
+        // return recipe
+        return HttpStatus.OK;
     }
 }
