@@ -2,11 +2,15 @@ import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeor
 
 @Entity('recipe')
 export class RecipeEntity {
-    @PrimaryGeneratedColumn('uuid') id: String;
+    @PrimaryGeneratedColumn('uuid') 
+    id: string;
 
-    @CreateDateColumn() created: Date;
+    @CreateDateColumn() 
+    created: Date;
 
-    @Column('text') title: String;
+    @Column('text') 
+    title: string;
 
-    @Column('text') description: String;
+    @Column('text') 
+    description: string;
 }
