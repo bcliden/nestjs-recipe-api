@@ -1,3 +1,5 @@
+import { Logger } from "@nestjs/common";
+
 export function ValidUUID (uuid: string): boolean {
     // RegEx for v4 postgres UUID
     // from https://stackoverflow.com/questions/19989481/how-to-determine-if-a-string-is-a-valid-v4-uuid#19989922

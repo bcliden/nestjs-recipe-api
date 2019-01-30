@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, NotFoundException, HttpStatus } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException, HttpStatus, HttpException, UnprocessableEntityException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -24,11 +24,6 @@ export class RecipeService {
     }
 
     async read(id: string){
-        // check correct uuid before db call
-        if ( !ValidUUID(id) ) {
-            throw new BadRequestException;
-        }
-
         const recipe =  await this.RecipeRepository.findOne({where: {id}});
         if (!recipe) {
             throw new NotFoundException;
@@ -38,26 +33,21 @@ export class RecipeService {
     }
 
     async update(id: string, data: Partial<RecipeDTO>){
-        // check correct uuid before db call
-        if ( !ValidUUID(id) ) {
-            throw new BadRequestException;
-        }
-
         const recipe = await this.RecipeRepository.findOne({ where: { id }});
         if (!recipe) {
             throw new NotFoundException;
         }
 
-        await this.RecipeRepository.update({id}, data);
-        return await this.RecipeRepository.findOne({ id });
+        try {
+            await this.RecipeRepository.update({id}, data);
+            return await this.RecipeRepository.findOne({ id });
+        } catch(error) {
+            Logger.error(`${error.name}: ${error.message}`, null, "Database")
+            throw new BadRequestException('Refused by Database');
+        }
     }
 
     async destroy(id: string){
-        // check correct uuid before db call
-        if ( !ValidUUID(id) ) {
-            throw new BadRequestException;
-        }
-
         const recipe = await this.RecipeRepository.findOne({ where: { id }});
         if (!recipe) {
             throw new NotFoundException;
