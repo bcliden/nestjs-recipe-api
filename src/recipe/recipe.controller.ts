@@ -3,7 +3,7 @@ import { RecipeService } from './recipe.service';
 import { RecipeDTO } from './recipe.dto';
 import { ValidationPipe } from 'src/shared/validation.pipe';
 
-@Controller('recipe')
+@Controller('api/recipes')
 export class RecipeController {
     private logger = new Logger('RecipeController');
     constructor(

@@ -10,21 +10,21 @@ import { ValidUUID } from '../shared/helpers';
 export class RecipeService {
     constructor(
         @InjectRepository(RecipeEntity)
-        private RecipeRepository: Repository<RecipeEntity>,
+        private recipeRepository: Repository<RecipeEntity>,
     ){}
 
     async showAll(){
-        return await this.RecipeRepository.find();
+        return await this.recipeRepository.find();
     }
 
     async create(data: RecipeDTO){
-        const recipe = await this.RecipeRepository.create(data);
-        await this.RecipeRepository.save(recipe);
+        const recipe = await this.recipeRepository.create(data);
+        await this.recipeRepository.save(recipe);
         return recipe;
     }
 
     async read(id: string){
-        const recipe =  await this.RecipeRepository.findOne({where: {id}});
+        const recipe =  await this.recipeRepository.findOne({where: {id}});
         if (!recipe) {
             throw new NotFoundException;
         }
@@ -33,14 +33,14 @@ export class RecipeService {
     }
 
     async update(id: string, data: Partial<RecipeDTO>){
-        const recipe = await this.RecipeRepository.findOne({ where: { id }});
+        const recipe = await this.recipeRepository.findOne({ where: { id }});
         if (!recipe) {
             throw new NotFoundException;
         }
 
         try {
-            await this.RecipeRepository.update({id}, data);
-            return await this.RecipeRepository.findOne({ id });
+            await this.recipeRepository.update({id}, data);
+            return await this.recipeRepository.findOne({ id });
         } catch(error) {
             Logger.error(`${error.name}: ${error.message}`, null, "Database")
             throw new BadRequestException('Refused by Database');
@@ -48,12 +48,12 @@ export class RecipeService {
     }
 
     async destroy(id: string){
-        const recipe = await this.RecipeRepository.findOne({ where: { id }});
+        const recipe = await this.recipeRepository.findOne({ where: { id }});
         if (!recipe) {
             throw new NotFoundException;
         }
 
-        await this.RecipeRepository.delete({id});
+        await this.recipeRepository.delete({id});
         // return recipe
         return HttpStatus.OK;
     }
