@@ -111,3 +111,6 @@ typings/
 .history
 
 # End of https://www.gitignore.io/api/node,linux,visualstudiocode
+
+# ignore built /dist dir #
+dist/*

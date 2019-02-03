@@ -12,7 +12,7 @@ export class UserDTO {
 
 }
 
-export class UserResponseObject {
+export class UserRO {
     id: string;
     username: string;
     created: Date;

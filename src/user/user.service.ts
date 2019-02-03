@@ -2,7 +2,7 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './user.entity';
 import { Repository } from 'typeorm';
-import { UserDTO, UserResponseObject } from './user.dto';
+import { UserDTO, UserRO } from './user.dto';
 
 @Injectable()
 export class UserService {
@@ -11,21 +11,23 @@ export class UserService {
         private userRepository: Repository<UserEntity>,
     ){}
 
-    async showAll (): Promise<UserResponseObject[]> {
-        const users = await this.userRepository.find();
-        return users.map( user => user.toResponseObject({ showJwt: false }) );
+    async showAll (): Promise<UserRO[]> {
+        const users = await this.userRepository.find({
+            relations: ['recipes']
+        });
+        return users.map( user => user.toResponseObject() );
     }
 
-    async login (data: UserDTO): Promise<UserResponseObject> {
+    async login (data: UserDTO): Promise<UserRO> {
         const { username, password } = data;
         const user = await this.userRepository.findOne({ where: {username}});
         if (!user || !(await user.comparePassword(password))) {
             throw new BadRequestException('Bad username or password');
         }
-        return user.toResponseObject();
+        return user.toResponseObject({ showJwt: true });
     }
 
-    async register (data: UserDTO): Promise<UserResponseObject> {
+    async register (data: UserDTO): Promise<UserRO> {
         const { username } = data;
         let user = await this.userRepository.findOne({ where: {username}});
         if (user) {
@@ -33,7 +35,7 @@ export class UserService {
         }
         user = await this.userRepository.create(data);
         await this.userRepository.save(user);
-        return user.toResponseObject();
+        return user.toResponseObject({ showJwt: true });
 
     }
 }

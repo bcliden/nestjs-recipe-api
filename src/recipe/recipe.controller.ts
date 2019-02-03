@@ -1,7 +1,9 @@
-import { Controller, Get, Post, Put, Delete, Body, Param, Logger, UsePipes } from '@nestjs/common';
+import { Controller, Get, Post, Put, Delete, Body, Param, Logger, UsePipes, UseGuards } from '@nestjs/common';
 import { RecipeService } from './recipe.service';
 import { RecipeDTO } from './recipe.dto';
 import { ValidationPipe } from 'src/shared/validation.pipe';
+import { AuthGuard } from 'src/shared/auth.guard';
+import { User } from 'src/user/user.decorator';
 
 @Controller('api/recipes')
 export class RecipeController {
@@ -10,6 +12,11 @@ export class RecipeController {
         private recipeService: RecipeService,
     ){}
 
+    private logData(options: any) {
+        options.id && this.logger.log('RECIPE ' + JSON.stringify(options.id));
+        options.userId && this.logger.log('USER ' + JSON.stringify(options.userId));
+        options.data && this.logger.log('DATA ' + JSON.stringify(options.data));
+    }
 
     @Get()
     showAllRecipes(){
@@ -17,12 +24,14 @@ export class RecipeController {
     }
 
     @Post()
+    @UseGuards(AuthGuard)
     @UsePipes(ValidationPipe)
     createRecipe(
+        @User('id') userId: string,
         @Body() data: RecipeDTO
-        ){
-        this.logger.log(`create: ${JSON.stringify(data)}`);
-        return this.recipeService.create(data);
+    ){
+        this.logData({userId, data});
+        return this.recipeService.create(userId, data);
     }
 
     @Get(':id')
@@ -34,21 +43,26 @@ export class RecipeController {
     }
 
     @Put(':id')
+    @UseGuards(AuthGuard)
     @UsePipes(ValidationPipe)
     updateRecipe(
         @Param('id') id: string,
+        @User('id') userId: string,
         @Body() data: Partial<RecipeDTO>
     ){
-        this.logger.log(`update: ${JSON.stringify(data)}`);
-        return this.recipeService.update(id, data);
+        this.logData({ id, userId, data});
+        return this.recipeService.update(id, userId, data);
     }
 
     @Delete(':id')
+    @UseGuards(AuthGuard)
     @UsePipes(ValidationPipe)
     destroyRecipe(
-        @Param('id') id: string
+        @Param('id') id: string,
+        @User('id') userId: string
     ){
-        return this.recipeService.destroy(id);
+        this.logData({ id, userId });
+        return this.recipeService.destroy(id, userId);
     }
 
 }
