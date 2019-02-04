@@ -17,6 +17,7 @@ export class ValidationPipe implements PipeTransform {
       throw new BadRequestException('Validation Failed: No body submitted');
     }
 
+
     // check ID param is valid
     if (type === 'param' && data === 'id' && !ValidUUID(value)) {
       throw new BadRequestException('Malformed ID');

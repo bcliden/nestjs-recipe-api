@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsString } from "class-validator";
+import { RecipeEntity } from "src/recipe/recipe.entity";
 
 export class UserDTO {
 
@@ -17,4 +18,6 @@ export class UserRO {
     username: string;
     created: Date;
     token?: string;
+    recipes?: RecipeEntity[];
+    bookmarks?: RecipeEntity[];
 }

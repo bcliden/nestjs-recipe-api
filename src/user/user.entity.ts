@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, CreateDateColumn, Column, BeforeInsert, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, CreateDateColumn, Column, BeforeInsert, OneToMany, ManyToMany, JoinTable } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import * as jwt from 'jsonwebtoken';
 import { UserRO } from './user.dto';
@@ -23,7 +23,11 @@ export class UserEntity {
     password: string;
 
     @OneToMany(type => RecipeEntity, recipe => recipe.author)
-    recipes: RecipeEntity;
+    recipes: RecipeEntity[];
+
+    @ManyToMany(type => RecipeEntity, { cascade: true })
+    @JoinTable()
+    bookmarks: RecipeEntity[]
 
     // hashes password before record goes into db
     @BeforeInsert()
@@ -35,12 +39,19 @@ export class UserEntity {
     // default to not sending JWT back
     toResponseObject (options: { showJwt: boolean } = { showJwt: false}): UserRO {
         const { id, created, username, token } = this;
-        const responseObject: any = { id, created, username };
+        const responseObject: UserRO = { 
+            id, 
+            created, 
+            username 
+        };
         if (options.showJwt) {
             responseObject.token = token;
         }
         if (this.recipes) {
-            responseObject.ideas = this.recipes
+            responseObject.recipes = this.recipes
+        }
+        if (this.bookmarks) {
+            responseObject.bookmarks = this.bookmarks;
         }
         return responseObject;
     }

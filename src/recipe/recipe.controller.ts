@@ -13,6 +13,7 @@ export class RecipeController {
     ){}
 
     private logData(options: any) {
+        // try to log in order: { id, userId, data }
         options.id && this.logger.log('RECIPE ' + JSON.stringify(options.id));
         options.userId && this.logger.log('USER ' + JSON.stringify(options.userId));
         options.data && this.logger.log('DATA ' + JSON.stringify(options.data));
@@ -65,4 +66,43 @@ export class RecipeController {
         return this.recipeService.destroy(id, userId);
     }
 
+    @Post(':id/upvote')
+    @UseGuards(AuthGuard)
+    upvoteRecipe (
+        @Param('id') id: string,
+        @User('id') userId: string
+    ) {
+        this.logData({ id, userId });
+        return this.recipeService.upvote(id, userId);
+    }
+
+    @Post(':id/downvote')
+    @UseGuards(AuthGuard)
+    downvoteRecipe (
+        @Param('id') id: string,
+        @User('id') userId: string
+    ) {
+        this.logData({ id, userId });
+        return this.recipeService.downvote(id, userId);
+    }
+
+    @Post(':id/bookmark')
+    @UseGuards(AuthGuard)
+    bookmarkRecipe (
+        @Param('id') id: string,
+        @User('id') userId: string
+    ) {
+        this.logData({ id, userId });
+        return this.recipeService.bookmark(id, userId);
+    }
+
+    @Delete(':id/bookmark')
+    @UseGuards(AuthGuard)
+    unbookmarkRecipe (
+        @Param('id') id: string,
+        @User('id') userId: string
+    ) {
+        this.logData({ id, userId });
+        return this.recipeService.unbookmark(id, userId);
+    }
 }

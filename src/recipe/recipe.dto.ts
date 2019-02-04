@@ -10,10 +10,12 @@ export class RecipeDTO {
 }
 
 export class RecipeRO {
-    id?: string;
+    id: string;
     updated: Date;
     created: Date;
     title: string;
     description: string;
     author: UserRO;
+    upvotes?: number;
+    downvotes?: number;
 }
