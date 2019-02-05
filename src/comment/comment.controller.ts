@@ -8,6 +8,7 @@ import {
   Post,
   Delete,
   Logger,
+  Query,
 } from '@nestjs/common';
 import { CommentService } from './comment.service';
 import { AuthGuard } from 'src/shared/auth.guard';
@@ -32,16 +33,19 @@ export class CommentController {
 
   @Get('user/:id')
   @UsePipes(ValidationPipe)
-  showCommentsByUser(@Param('id') userId: string) {
+  showCommentsByUser(@Param('id') userId: string, @Query('page') page: number) {
     this.logData({ userId });
-    return this.commentService.showByUser(userId);
+    return this.commentService.showByUser(userId, page);
   }
 
   @Get('recipe/:id')
   @UsePipes(ValidationPipe)
-  showCommentsByRecipe(@Param('id') recipeId: string) {
+  showCommentsByRecipe(
+    @Param('id') recipeId: string,
+    @Query('page') page: number,
+  ) {
     this.logData({ recipeId });
-    return this.commentService.showByRecipe(recipeId);
+    return this.commentService.showByRecipe(recipeId, page);
   }
 
   @Post('recipe/:id')

@@ -30,18 +30,22 @@ export class CommentService {
     };
   }
 
-  async showByRecipe(recipeId: string) {
+  async showByRecipe(recipeId: string, page: number = 1) {
     const comments = await this.commentRepository.find({
       where: { recipe: { id: recipeId } },
       relations: ['author', 'recipe'],
+      take: 25,
+      skip: 25 * (page - 1),
     });
     return comments.map(comment => this.toResponseObject(comment));
   }
 
-  async showByUser(userId: string) {
+  async showByUser(userId: string, page: number = 1) {
     const comments = await this.commentRepository.find({
       where: { author: { id: userId } },
       relations: ['author', 'recipe'],
+      take: 25,
+      skip: 25 * (page - 1),
     });
 
     return comments.map(comment => this.toResponseObject(comment));
