@@ -9,7 +9,7 @@ import { RecipeEntity } from 'src/recipe/recipe.entity';
 import { UserEntity } from 'src/user/user.entity';
 import { Repository } from 'typeorm';
 
-import { CommentEntity } from './comments.entity';
+import { CommentEntity } from './comment.entity';
 import { CommentDTO } from './comment.dto';
 
 @Injectable()

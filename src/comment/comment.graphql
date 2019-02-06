@@ -1,0 +1,8 @@
+type Comment {
+  id: ID!
+  created: String!
+  updated: String!
+  comment: String!
+  # author: User
+  # recipe: Recipe
+}

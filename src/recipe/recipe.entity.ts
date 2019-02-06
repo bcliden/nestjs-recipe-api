@@ -10,7 +10,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { UserEntity } from 'src/user/user.entity';
-import { CommentEntity } from 'src/comment/comments.entity';
+import { CommentEntity } from '../comment/comment.entity';
 
 @Entity('recipe')
 export class RecipeEntity {

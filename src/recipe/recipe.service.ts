@@ -66,24 +66,25 @@ export class RecipeService {
     return recipe;
   }
 
-  async showAll(page: number = 1): Promise<RecipeRO[]> {
+  async showAll(
+    {
+      page,
+      newest,
+    }: {
+      page: number;
+      newest: boolean;
+    } = { page: 1, newest: false },
+  ): Promise<RecipeRO[]> {
+    // let { page, newest } = options;
     const recipes = await this.recipeRepository.find({
       relations: ['author', 'upvotes', 'downvotes', 'comments'],
       take: 25,
       skip: 25 * (page - 1),
+      order: newest && { created: 'DESC' },
     });
     return recipes.map(recipe => this.toResponseObject(recipe));
   }
 
-  async showNewest(page: number = 1) {
-    const recipes = await this.recipeRepository.find({
-      relations: ['author', 'upvotes', 'downvotes', 'comments'],
-      take: 25,
-      skip: 25 * (page - 1),
-      order: { created: 'DESC' },
-    });
-    return recipes.map(recipe => this.toResponseObject(recipe));
-  }
   async create(userId: string, data: RecipeDTO): Promise<RecipeRO> {
     const user = await this.userRepository.findOne({ where: { id: userId } });
     const recipe = await this.recipeRepository.create({

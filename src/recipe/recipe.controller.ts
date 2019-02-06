@@ -30,13 +30,12 @@ export class RecipeController {
   }
 
   @Get()
-  showAllRecipes(@Query('page') page: number) {
-    return this.recipeService.showAll(page);
-  }
-
-  @Get('newest')
-  showNewestRecipe(@Query('page') page: number) {
-    return this.recipeService.showNewest(page);
+  showAllRecipes(
+    @Query('page') page: number,
+    @Query('newest') newest: string | boolean,
+  ) {
+    newest === 'true' ? (newest = true) : (newest = false);
+    return this.recipeService.showAll({ page, newest });
   }
 
   @Post()
