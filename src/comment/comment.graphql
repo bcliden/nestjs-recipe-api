@@ -3,6 +3,16 @@ type Comment {
   created: String!
   updated: String!
   comment: String!
-  # author: User
-  # recipe: Recipe
+  author: User
+  recipe: Recipe
+}
+
+type Query {
+  comments: [Comment!]
+  comment(id: ID): Comment
+}
+
+type Mutation {
+  createComment(recipe: ID!, comment: String!): Comment
+  deleteComment(recipe: ID!): Comment
 }

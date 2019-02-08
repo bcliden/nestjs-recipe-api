@@ -60,11 +60,14 @@ export class CommentService {
   }
 
   async create(recipeId: string, userId: string, data: CommentDTO) {
-    const user = await this.userRepository.findOne({ where: { userId } });
-    const recipe = await this.recipeRepository.findOne({ where: { recipeId } });
-    // if (!user || !recipe) {
-    //   throw new BadRequestException('User or Recipe not found');
-    // }
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+    const recipe = await this.recipeRepository.findOne({
+      where: { id: recipeId },
+      relations: ['comments'],
+    });
+    if (!user || !recipe) {
+      throw new BadRequestException('User or Recipe not found');
+    }
 
     const comment = this.commentRepository.create({
       ...data,
