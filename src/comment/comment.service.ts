@@ -3,6 +3,7 @@ import {
   BadRequestException,
   UnauthorizedException,
   HttpStatus,
+  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { RecipeEntity } from 'src/recipe/recipe.entity';
@@ -81,14 +82,17 @@ export class CommentService {
   async destroy(id: string, userId: string) {
     const comment = await this.commentRepository.findOne({
       where: { id },
-      relations: ['author', 'recipe'],
+      relations: ['author'],
     });
-
+    if (!comment) {
+      throw new NotFoundException('Comment not found');
+    }
     if (comment.author.id !== userId) {
       throw new UnauthorizedException("User doesn't own comment.");
     }
-
     await this.commentRepository.remove(comment);
-    return HttpStatus.OK;
+    // re-add id so it can be returned
+    comment.id = id;
+    return this.toResponseObject(comment);
   }
 }

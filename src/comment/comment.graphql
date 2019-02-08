@@ -14,5 +14,5 @@ type Query {
 
 type Mutation {
   createComment(recipe: ID!, comment: String!): Comment
-  deleteComment(recipe: ID!): Comment
+  deleteComment(id: ID!): Comment!
 }

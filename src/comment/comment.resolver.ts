@@ -36,6 +36,7 @@ export class CommentResolver {
   @UseGuards(AuthGuard)
   deleteComment(@Args('id') id: string, @Context('user') user: any) {
     const { id: userId } = user;
-    return this.commentService.destroy(id, userId);
+    const result = this.commentService.destroy(id, userId);
+    return result;
   }
 }
