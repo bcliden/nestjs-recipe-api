@@ -16,8 +16,9 @@ export class LoggingInterceptor implements NestInterceptor {
   ): Observable<any> {
     const req = context.switchToHttp().getRequest();
     const now = Date.now();
-    // check for req ... GraphQL will not have this
-    if (req) {
+    // check for req AND method AND url ...
+    // so you can log as HTTP
+    if (req && req.method && req.url) {
       const method = req.method;
       const url = req.url;
 
@@ -30,6 +31,7 @@ export class LoggingInterceptor implements NestInterceptor {
         ),
       );
     } else {
+      // else log as GraphQL
       const ctx: any = GqlExecutionContext.create(context);
       const resolverName = ctx.constructorRef.name;
       const info = ctx.getInfo();

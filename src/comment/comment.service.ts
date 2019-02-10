@@ -57,6 +57,9 @@ export class CommentService {
       where: { id },
       relations: ['author', 'recipe'],
     });
+    if (!comment) {
+      throw new NotFoundException();
+    }
     return this.toResponseObject(comment);
   }
 
@@ -91,8 +94,10 @@ export class CommentService {
       throw new UnauthorizedException("User doesn't own comment.");
     }
     await this.commentRepository.remove(comment);
-    // re-add id so it can be returned
+
+    // re-add old id so it can be returned
     comment.id = id;
+
     return this.toResponseObject(comment);
   }
 }

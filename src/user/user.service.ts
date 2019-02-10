@@ -25,6 +25,7 @@ export class UserService {
       where: { username },
       relations: ['recipes', 'bookmarks'],
     });
+    console.log(user.toResponseObject());
     return user.toResponseObject();
   }
 

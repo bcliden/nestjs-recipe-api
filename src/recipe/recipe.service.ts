@@ -91,6 +91,9 @@ export class RecipeService {
       ...data,
       author: user,
     });
+    if (!user) {
+      throw new BadRequestException('user not found');
+    }
     await this.recipeRepository.save(recipe);
     return this.toResponseObject(recipe);
   }
@@ -125,7 +128,7 @@ export class RecipeService {
       await this.recipeRepository.update({ id }, data);
       recipe = await this.recipeRepository.findOne({
         where: { id },
-        relations: ['author', 'comments'],
+        relations: ['author', 'comments', 'upvotes', 'downvotes'],
       });
       return this.toResponseObject(recipe);
     } catch (error) {
@@ -144,9 +147,9 @@ export class RecipeService {
     }
     this.ensureOwnership(recipe, userId);
 
-    await this.recipeRepository.delete({ id });
-    // return recipe
-    return HttpStatus.OK;
+    await this.recipeRepository.remove(recipe);
+    recipe.id = id; // add old ID so we can return it
+    return this.toResponseObject(recipe);
   }
 
   async upvote(id: string, userId: string) {

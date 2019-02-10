@@ -13,7 +13,7 @@ import { UserDTO } from './user.dto';
 import { UseGuards } from '@nestjs/common';
 import { AuthGuard } from 'src/shared/auth.guard';
 
-@Resolver()
+@Resolver('User')
 export class UserResolver {
   constructor(
     private userService: UserService,
@@ -21,43 +21,43 @@ export class UserResolver {
   ) {}
 
   @Query()
-  users() {
-    return this.userService.showAll();
+  async users(@Args('page') page: number) {
+    return await this.userService.showAll(page);
   }
 
   @Query()
-  user(@Args('username') username: string) {
-    return this.userService.read(username);
+  async user(@Args('username') username: string) {
+    return await this.userService.read(username);
   }
 
   @Query()
   @UseGuards(AuthGuard)
-  whoami(@Context('user') user: UserDTO) {
+  async whoami(@Context('user') user: UserDTO) {
     const { username } = user;
-    return this.userService.read(username);
+    return await this.userService.read(username);
   }
 
   @Mutation()
-  login(
+  async login(
     @Args('username') username: string,
     @Args('password') password: string,
   ) {
     const user: UserDTO = { username, password };
-    return this.userService.login(user);
+    return await this.userService.login(user);
   }
 
   @Mutation()
-  register(
+  async register(
     @Args('username') username: string,
     @Args('password') password: string,
   ) {
     const user: UserDTO = { username, password };
-    return this.userService.register(user);
+    return await this.userService.register(user);
   }
 
-  @ResolveProperty()
-  comments(@Parent() user) {
+  @ResolveProperty('comments')
+  async getComments(@Parent() user) {
     const { id } = user;
-    return this.commentService.showByUser(id);
+    return await this.commentService.showByUser(id);
   }
 }

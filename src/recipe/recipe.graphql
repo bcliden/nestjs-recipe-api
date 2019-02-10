@@ -1,5 +1,5 @@
 type Recipe {
-  id: ID!
+  id: ID
   updated: String!
   created: String!
   title: String!
@@ -12,4 +12,15 @@ type Recipe {
 
 type Query {
   recipes(page: Int, newest: Boolean): [Recipe!]
+  recipe(id: ID!): Recipe!
+}
+
+type Mutation {
+  createRecipe(title: String, description: String!): Recipe!
+  updateRecipe(id: ID!, title: String, description: String): Recipe!
+  deleteRecipe(id: ID!): Recipe!
+  upvote(id: ID!): Recipe!
+  downvote(id: ID!): Recipe!
+  bookmark(id: ID!): User!
+  unbookmark(id: ID!): User!
 }

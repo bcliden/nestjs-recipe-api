@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinTable,
+  JoinColumn,
 } from 'typeorm';
 import { UserEntity } from 'src/user/user.entity';
 import { RecipeEntity } from 'src/recipe/recipe.entity';
@@ -25,7 +26,8 @@ export class CommentEntity {
   comment: string;
 
   @ManyToOne(type => UserEntity)
-  @JoinTable()
+  // @JoinTable()
+  @JoinColumn()
   author: UserEntity;
 
   @ManyToOne(type => RecipeEntity, recipe => recipe.comments)
