@@ -7,6 +7,7 @@ import {
   UseGuards,
   Header,
   Query,
+  Param,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UserDTO } from './user.dto';
@@ -15,22 +16,33 @@ import { AuthGuard } from 'src/shared/auth.guard';
 import { UserEntity } from './user.entity';
 import { User } from './user.decorator';
 
-@Controller('api/users')
+@Controller()
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @Get('')
+  @Get('/api/users')
   showAllUsers(@Query('page') page: number) {
     return this.userService.showAll(page);
   }
 
-  @Post('')
+  @Get('/api/users/:id')
+  showOneUser(@Param('id') id: string) {
+    return this.userService.read(id);
+  }
+
+  @Get('auth/whoami')
+  @UseGuards(AuthGuard)
+  showMe(@User('username') username: string) {
+    return this.userService.read(username);
+  }
+
+  @Post('auth/login')
   @UsePipes(ValidationPipe)
   login(@Body() data: UserDTO) {
     return this.userService.login(data);
   }
 
-  @Post('register')
+  @Post('auth/register')
   @UsePipes(ValidationPipe)
   register(@Body() data: UserDTO) {
     return this.userService.register(data);
