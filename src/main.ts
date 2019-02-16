@@ -12,11 +12,13 @@ async function bootstrap() {
 
   // express middleware here
   // app.use(cookieParser());
-  app.enableCors({
+  const corsCfg = {
     origin: [
-      'localhost:4200', // angular port
+      'http://localhost:3000', // react port
+      'http://localhost:4200', // angular port
     ],
-  });
+  };
+  app.enableCors(corsCfg);
 
   await app.listen(port);
   Logger.log(`Server running on http://localhost:${port}`, 'Bootstrap');
