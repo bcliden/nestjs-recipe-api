@@ -35,6 +35,11 @@ export class RecipeService {
     if (responseObject.downvotes) {
       responseObject.downvotes = recipe.downvotes.length;
     }
+    if (responseObject.comments.length > 0) {
+      responseObject.comments = responseObject.comments.map(comment => {
+        return { ...comment, author: comment.author.toResponseObject() };
+      });
+    }
     return responseObject;
   }
 
@@ -101,7 +106,13 @@ export class RecipeService {
   async read(id: string): Promise<RecipeRO> {
     const recipe = await this.recipeRepository.findOne({
       where: { id },
-      relations: ['author', 'upvotes', 'downvotes', 'comments'],
+      relations: [
+        'author',
+        'upvotes',
+        'downvotes',
+        'comments',
+        'comments.author',
+      ],
     });
     if (!recipe) {
       throw new NotFoundException();
