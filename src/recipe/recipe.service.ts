@@ -35,7 +35,8 @@ export class RecipeService {
     if (responseObject.downvotes) {
       responseObject.downvotes = recipe.downvotes.length;
     }
-    if (responseObject.comments.length > 0) {
+    // if comments.author is populated
+    if (responseObject.comments.filter(comment => comment.author).length > 0) {
       responseObject.comments = responseObject.comments.map(comment => {
         return { ...comment, author: comment.author.toResponseObject() };
       });
@@ -82,7 +83,13 @@ export class RecipeService {
   ): Promise<RecipeRO[]> {
     // let { page, newest } = options;
     const recipes = await this.recipeRepository.find({
-      relations: ['author', 'upvotes', 'downvotes', 'comments'],
+      relations: [
+        'author',
+        'upvotes',
+        'downvotes',
+        'comments',
+        'comments.author',
+      ],
       take: 25,
       skip: 25 * (page - 1),
       order: newest && { created: 'DESC' },
