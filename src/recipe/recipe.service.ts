@@ -146,7 +146,13 @@ export class RecipeService {
       await this.recipeRepository.update({ id }, data);
       recipe = await this.recipeRepository.findOne({
         where: { id },
-        relations: ['author', 'comments', 'upvotes', 'downvotes'],
+        relations: [
+          'author',
+          'comments',
+          'comments.author',
+          'upvotes',
+          'downvotes',
+        ],
       });
       return this.toResponseObject(recipe);
     } catch (error) {
@@ -173,7 +179,13 @@ export class RecipeService {
   async upvote(id: string, userId: string) {
     let recipe = await this.recipeRepository.findOne({
       where: { id },
-      relations: ['author', 'upvotes', 'downvotes', 'comments'],
+      relations: [
+        'author',
+        'upvotes',
+        'downvotes',
+        'comments',
+        'comments.author',
+      ],
     });
     let user = await this.userRepository.findOne({
       where: { id: userId },
@@ -185,7 +197,13 @@ export class RecipeService {
   async downvote(id: string, userId: string) {
     let recipe = await this.recipeRepository.findOne({
       where: { id },
-      relations: ['author', 'upvotes', 'downvotes', 'comments'],
+      relations: [
+        'author',
+        'upvotes',
+        'downvotes',
+        'comments',
+        'comments.author',
+      ],
     });
     let user = await this.userRepository.findOne({
       where: { id: userId },

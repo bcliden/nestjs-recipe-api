@@ -1,14 +1,11 @@
 {
-    "type": "postgres",
-    "host": "localhost",
-    "port": "5432",
-    "username": "postgres",
-    "password": "",
-    "database": "recipe-api",
-    "synchronize": true,
-    "logging": true,
-    "entities": [
-        "./src/**/*.entity.ts",
-        "./dist/**/*.entity.js"
-    ]
+  "type": "postgres",
+  "host": "localhost",
+  "port": "5432",
+  "username": "postgres",
+  "password": "",
+  "database": "recipe-api",
+  "synchronize": true,
+  "logging": false,
+  "entities": ["./src/**/*.entity.ts", "./dist/**/*.entity.js"]
 }
