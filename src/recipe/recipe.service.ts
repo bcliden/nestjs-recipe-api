@@ -36,7 +36,10 @@ export class RecipeService {
       responseObject.downvotes = recipe.downvotes.length;
     }
     // if comments.author is populated
-    if (responseObject.comments.filter(comment => comment.author).length > 0) {
+    if (
+      responseObject.comments &&
+      responseObject.comments.filter(comment => comment.author).length > 0
+    ) {
       responseObject.comments = responseObject.comments.map(comment => {
         return { ...comment, author: comment.author.toResponseObject() };
       });
