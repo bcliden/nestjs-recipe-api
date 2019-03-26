@@ -2,6 +2,7 @@
 
 This is an api server for a recipe database.
 Currently supports REST-style http requests.
+GraphQL queries -> `/api/graphql`
 
 ## API Structure
 
